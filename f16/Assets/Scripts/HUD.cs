@@ -30,7 +30,7 @@ public class HUD : MonoBehaviour
     [SerializeField] private RectTransform FPM = null;
     [SerializeField] private RectTransform Horizon = null;
 
-    [Header("SemiHorizon")]
+    [Header("PositiveSemiHorizon")]
     [SerializeField] private RectTransform five = null;
     [SerializeField] private RectTransform ten = null;
     [SerializeField] private RectTransform fifteen = null;
@@ -40,13 +40,30 @@ public class HUD : MonoBehaviour
     [SerializeField] private RectTransform thirtyfive = null;
     [SerializeField] private RectTransform fourty = null;
     [SerializeField] private RectTransform fourtyfive = null;
+    [SerializeField] private RectTransform fifty = null;
+    [SerializeField] private RectTransform fiftyfive = null;
+    [SerializeField] private RectTransform sixty = null;
+    [SerializeField] private RectTransform sixtyfive = null;
+    [SerializeField] private RectTransform seventy = null;
+    [SerializeField] private RectTransform seventyfive = null;
+    [SerializeField] private RectTransform eighty = null;
+    [SerializeField] private RectTransform eightyfive = null;
+    [SerializeField] private RectTransform vertical = null;
+
+    [Header("PositiveSemiHorizon_Over")]
+    [SerializeField] private RectTransform sixty_over = null;
+    [SerializeField] private RectTransform sixtyfive_over = null;
+    [SerializeField] private RectTransform seventy_over = null;
+    [SerializeField] private RectTransform seventyfive_over = null;
+    [SerializeField] private RectTransform eighty_over = null;
+    [SerializeField] private RectTransform eightyfive_over = null;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -90,7 +107,6 @@ public class HUD : MonoBehaviour
         five.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0,0,0)*(new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized* Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
         five.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
 
-
         deg = 10;
         ten.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
         ten.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
@@ -122,6 +138,78 @@ public class HUD : MonoBehaviour
         deg = 45;
         fourtyfive.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
         fourtyfive.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        deg = 50;
+        fifty.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        fifty.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        deg = 55;
+        fiftyfive.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        fiftyfive.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        deg = 60;
+        sixty.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        sixty.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        sixty_over.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * -Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        sixty_over.rotation = Quaternion.Euler(0, 0, 180 - player.transform.rotation.eulerAngles.z);
+
+        deg = 65;
+        sixtyfive.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        sixtyfive.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        sixtyfive_over.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * -Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        sixtyfive_over.rotation = Quaternion.Euler(0, 0, 180 - player.transform.rotation.eulerAngles.z);
+
+        deg = 70;
+        seventy.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        seventy.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        seventy_over.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * -Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        seventy_over.rotation = Quaternion.Euler(0, 0, 180 - player.transform.rotation.eulerAngles.z);
+
+        deg = 75;
+        seventyfive.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        seventyfive.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        seventyfive_over.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * -Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        seventyfive_over.rotation = Quaternion.Euler(0, 0, 180 - player.transform.rotation.eulerAngles.z);
+
+        deg = 80;
+        eighty.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        eighty.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        eighty_over.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * -Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        eighty_over.rotation = Quaternion.Euler(0, 0, 180 - player.transform.rotation.eulerAngles.z);
+
+        deg = 85;
+        eightyfive.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        eightyfive.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        eightyfive_over.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * -Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        eightyfive_over.rotation = Quaternion.Euler(0, 0, 180-player.transform.rotation.eulerAngles.z);
+
+        deg = 90;
+        vertical.position = Camera.main.WorldToScreenPoint(player.transform.position + (Vector3.Project(player.transform.forward, Quaternion.Euler(0, 0, 0) * (new Vector3(player.transform.forward.x, 0, player.transform.forward.z))).normalized * Mathf.Cos(Mathf.Deg2Rad * deg) + new Vector3(0, Mathf.Sin(Mathf.Deg2Rad * deg), 0)) * scope);
+        vertical.rotation = Quaternion.Euler(0, 0, -player.transform.rotation.eulerAngles.z);
+
+        if (player.transform.forward.y < 0)
+        {
+            vertical.position = thirty.position;
+            sixty.position = thirty.position;
+            sixty_over.position = thirty.position;
+            sixtyfive.position = thirty.position;
+            sixtyfive_over.position = thirty.position;
+            seventy.position = thirty.position;
+            seventy_over.position = thirty.position;
+            seventyfive.position = thirty.position;
+            seventyfive_over.position = thirty.position;
+            eighty.position = thirty.position;
+            eighty_over.position = thirty.position;
+            eightyfive.position = thirty.position;
+            eightyfive_over.position = thirty.position;
+        }
+
 
     }
 }
