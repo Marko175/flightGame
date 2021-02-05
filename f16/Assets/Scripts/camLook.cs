@@ -15,35 +15,55 @@ public class camLook : MonoBehaviour
     float rotationY = 0F;
     Quaternion originalRotation;
     float originalZoom;
-    float vel;
+    Vector3 originalScale;
+    Vector3 updatedScale;
+    float vel1;
+    public float hudZoom;
+    public float updatedZoom;
+    public Camera cam;
+    bool zoomed;
 
 
     public float Response = 10;
     void Start()
     {
         originalRotation = transform.localRotation;
-        vel = 5;
-        originalZoom = Camera.main.fieldOfView;
+        hudZoom = 1.43f;
+        originalZoom = cam.fieldOfView;
+        originalScale = hud.transform.localScale;
+        updatedScale = hud.transform.localScale;
+        updatedZoom = cam.fieldOfView;
+        zoomed = false;
+
     }
-    void Update()
+    void FixedUpdate()
     {
 
         RotateCamera();
         if (Input.GetKey(KeyCode.Mouse1))
         {
-            
+            zoomed = true;
             float targetZoom = originalZoom - 15f;
+            cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, targetZoom, ref vel1, Time.deltaTime, 100);
+            float ratio1 = (cam.fieldOfView - originalZoom) / (targetZoom - originalZoom);
 
-            Camera.main.fieldOfView = Mathf.SmoothDamp(Camera.main.fieldOfView, targetZoom, ref vel, Time.deltaTime, 100);
+
+            Vector3 targetScale = originalScale * hudZoom;
+            hud.transform.localScale = originalScale + (targetScale-originalScale) * ratio1;
+            updatedScale = hud.transform.localScale;
+            updatedZoom = cam.fieldOfView;
+
 
         }
-        else
+        else if (zoomed)
         {
             float targetZoom = originalZoom;
+            cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, targetZoom, ref vel1, Time.deltaTime, 100);
+            float ratio2 = (cam.fieldOfView - targetZoom) / (updatedZoom - targetZoom);
 
-            Camera.main.fieldOfView = Mathf.SmoothDamp(Camera.main.fieldOfView, targetZoom, ref vel, Time.deltaTime, 100);
+            hud.transform.localScale = originalScale + (updatedScale - originalScale) * ratio2;
+            vel1 = 0;
 
-            vel = 0;
         }
 
 

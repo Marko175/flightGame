@@ -876,9 +876,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 1
+  m_UiScaleMode: 0
   m_ReferencePixelsPerUnit: 100
-  m_ScaleFactor: 1
+  m_ScaleFactor: 1.9
   m_ReferenceResolution: {x: 800, y: 600}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
@@ -7371,7 +7371,7 @@ Camera:
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
-  m_FOVAxisMode: 0
+  m_FOVAxisMode: 1
   m_SensorSize: {x: 36, y: 24}
   m_LensShift: {x: 0, y: 0}
   m_FocalLength: 50
@@ -7383,7 +7383,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 60000
-  field of view: 63
+  field of view: 63.04137
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -7434,6 +7434,9 @@ MonoBehaviour:
   maximumX: 360
   minimumY: -60
   maximumY: 60
+  hudZoom: 0
+  updatedZoom: 0
+  cam: {fileID: 963194227}
   Response: 10
 --- !u!1 &968017150
 GameObject:
@@ -9980,6 +9983,9 @@ MonoBehaviour:
   maximumX: 360
   minimumY: -60
   maximumY: 60
+  hudZoom: 0
+  updatedZoom: 0
+  cam: {fileID: 1914034951}
   Response: 10
 --- !u!1 &1973264472
 GameObject:

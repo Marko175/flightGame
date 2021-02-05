@@ -96,7 +96,7 @@ public class HUD : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         if (sufa.Player == null)
             return;
@@ -125,7 +125,7 @@ public class HUD : MonoBehaviour
         
         g.text = $"{player.g:0.0}G";
 
-        this.transform.position = Camera.main.WorldToScreenPoint(player.transform.position +player.transform.forward * scope);
+        this.transform.position = Camera.main.WorldToScreenPoint(player.transform.position +player.transform.forward * scope *120);
 
 
     }
