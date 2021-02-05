@@ -125,6 +125,8 @@ public class HUD : MonoBehaviour
         
         g.text = $"{player.g:0.0}G";
 
+        this.transform.position = Camera.main.WorldToScreenPoint(player.transform.position +player.transform.forward * scope);
+
 
     }
 

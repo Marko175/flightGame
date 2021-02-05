@@ -8,6 +8,7 @@ TagManager:
   - backCam
   - scaleable
   - semihorizon
+  - HUD
   layers:
   - Default
   - TransparentFX
