@@ -14,12 +14,37 @@ public class camLook : MonoBehaviour
     float rotationX = 0F;
     float rotationY = 0F;
     Quaternion originalRotation;
+    float originalZoom;
+    float vel;
+
 
     public float Response = 10;
-
+    void Start()
+    {
+        originalRotation = transform.localRotation;
+        vel = 5;
+        originalZoom = Camera.main.fieldOfView;
+    }
     void Update()
     {
+
         RotateCamera();
+        if (Input.GetKey(KeyCode.Mouse1))
+        {
+            
+            float targetZoom = originalZoom - 15f;
+
+            Camera.main.fieldOfView = Mathf.SmoothDamp(Camera.main.fieldOfView, targetZoom, ref vel, Time.deltaTime, 100);
+
+        }
+        else
+        {
+            float targetZoom = originalZoom;
+
+            Camera.main.fieldOfView = Mathf.SmoothDamp(Camera.main.fieldOfView, targetZoom, ref vel, Time.deltaTime, 100);
+
+            vel = 0;
+        }
 
 
     }
@@ -39,7 +64,7 @@ public class camLook : MonoBehaviour
             Quaternion target = originalRotation * xQuaternion * yQuaternion;
             transform.localRotation = Damp(transform.localRotation, target, Response, Time.deltaTime);
 
-            Debug.Log(target.eulerAngles.ToString());
+
 
             if (target.eulerAngles.y < 90 || target.eulerAngles.y > 270 || !(name.Equals("HudCam")))
                 hud.SetActive(false);
@@ -67,12 +92,10 @@ public class camLook : MonoBehaviour
     }
 
 
-        void Start()
-    {
-        originalRotation = transform.localRotation;
-    }
+    
     private Quaternion Damp(Quaternion a, Quaternion b, float lambda, float dt)
     {
         return Quaternion.Slerp(a, b, 1 - Mathf.Exp(-lambda * dt));
     }
+
 }
