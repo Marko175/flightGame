@@ -35,6 +35,7 @@ public class sufa : MonoBehaviour
 
     public float Speed;
 
+
     [Header("Drag")]
     public float Drag = 1.5f;
     public float InducedDrag = .75f;
@@ -83,47 +84,35 @@ public class sufa : MonoBehaviour
     public float Scale = 1f;
 
 
-
-    // Start is called before the first frame update
     void Awake()
     {
-        Application.targetFrameRate = 20;
-        SetCam();
+        Application.targetFrameRate = 70; // Sets target FPS
+        SetCam(); // Sets active camera + hud
 
-
-        if (isPlayer)
+        if (isPlayer)//Sets global player
             Player = this;
+
+        //Initial stats
         startSpeed = 200f;//mps
         Speed = startSpeed;
+        altitude = transform.position.y;
         velocity = transform.forward * startSpeed;
         VelocityDirection = velocity.normalized;
-        flames.Stop();
-
-
-        
-
-
+        flames.Stop(); // AB off
     }
 
 
 
-    // Update is called once per frame
-    private void Update()
+
+    void FixedUpdate()
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
             cam = !cam;
             SetCam();
         }
-    }
-
-
-    void FixedUpdate()
-    {
-
         getPlayerInput();
-        if (useFixedUpdates)
-            RunModel(Time.deltaTime);
+        RunModel(Time.deltaTime);
         
     }
 
@@ -139,7 +128,7 @@ public class sufa : MonoBehaviour
         RunFlightModelRotations(deltaTime);
         RunFlightModelLinear(deltaTime);
 
-        altitude = transform.position.y * Scale;
+        altitude += velocity.y * deltaTime;
         rAltitude = altitude - Terrain.activeTerrain.SampleHeight(transform.position) * Scale;
         if(-transform.up.y>-0.5)
         {
@@ -149,10 +138,10 @@ public class sufa : MonoBehaviour
 
     private void RunFlightModelLinear(float deltaTime)
     {
-        // Gravity can speed the plane up in a dive, or slow it in a climb.
+        // Gravity
         Vector3 gravityForce = Physics.gravity * Mass;
 
-        // Engines provide thrust forwards.
+        // Thrust
         float thrust = flightInput.Reheat ? ReheatThrust : flightInput.Throttle * MilThrust;
         Vector3 thrustForce = transform.forward * thrust;
 

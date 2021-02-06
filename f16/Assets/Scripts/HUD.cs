@@ -20,6 +20,7 @@ public class HUD : MonoBehaviour
     private float nextActionTime = 0.0f;
     public float period = 0.2f;
     public float scope = 5f;
+    sufa player;
 
     [SerializeField] private Text velocity;
     [SerializeField] private Text g;
@@ -92,15 +93,15 @@ public class HUD : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        player = sufa.Player;
     }
 
     // Update is called once per frame
     void LateUpdate()
     {
-        if (sufa.Player == null)
+        if (player == null)
             return;
-        var player = sufa.Player;
+        
 
         if (Time.time > nextActionTime)
         {

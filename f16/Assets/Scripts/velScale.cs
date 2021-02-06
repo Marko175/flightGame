@@ -12,7 +12,6 @@ public class velScale : MonoBehaviour
 
         rt = GetComponent<RectTransform>();
         height = 753f;
-        Debug.Log(height);
         
     }
 
