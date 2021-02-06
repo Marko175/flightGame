@@ -35,7 +35,6 @@ public class floatingPointError : MonoBehaviour
                 if (t.parent == null)
                 {
                     t.position -= player.transform.position;
-                Debug.Log(t.name + " shifted");
                 }
             }
     }

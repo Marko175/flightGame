@@ -102,9 +102,7 @@ public class sufa : MonoBehaviour
     }
 
 
-
-
-    void FixedUpdate()
+    void Update()
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -112,6 +110,11 @@ public class sufa : MonoBehaviour
             SetCam();
         }
         getPlayerInput();
+    }
+
+    void FixedUpdate()
+    {
+        
         RunModel(Time.deltaTime);
         
     }
