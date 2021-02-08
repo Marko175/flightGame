@@ -21,7 +21,9 @@ public class sufa : MonoBehaviour
     [Header("Unity Properties")]
     public Camera hudCam;
     public Camera backCam;
+    public Camera deadCam;
     public GameObject hud;
+    public GameObject explosion;
     public bool cam;
     public bool useFixedUpdates = true;
     public FlightInput flightInput = new FlightInput();
@@ -123,6 +125,7 @@ public class sufa : MonoBehaviour
     {
         backCam.gameObject.SetActive(cam);
         hudCam.gameObject.SetActive(!cam);
+        deadCam.gameObject.SetActive(false);
         hud.SetActive(!cam);
     }
 
@@ -137,6 +140,17 @@ public class sufa : MonoBehaviour
         {
             rAltitude = -999999f;
         }       
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        deadCam.gameObject.SetActive(true);
+        deadCam.transform.position = backCam.transform.position;
+        deadCam.transform.rotation = backCam.transform.rotation;
+        hud.SetActive(false);
+        Instantiate(explosion, transform.position, Quaternion.Euler(0,0,0));
+        Destroy(gameObject);
+
     }
 
     private void RunFlightModelLinear(float deltaTime)
@@ -344,4 +358,5 @@ public static class Maths
 
         return verticalG;
     }
+
 }
