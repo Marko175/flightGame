@@ -22,8 +22,9 @@ public class sufa : MonoBehaviour
     public Camera hudCam;
     public Camera backCam;
     public Camera deadCam;
+    public GameObject dc;
     public GameObject hud;
-    public GameObject explosion;
+    public ParticleSystem explosion;
     public bool cam;
     public bool useFixedUpdates = true;
     public FlightInput flightInput = new FlightInput();
@@ -101,6 +102,7 @@ public class sufa : MonoBehaviour
         velocity = transform.forward * startSpeed;
         VelocityDirection = velocity.normalized;
         flames.Stop(); // AB off
+        explosion.Stop();
 
     }
 
@@ -146,10 +148,11 @@ public class sufa : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         deadCam.gameObject.SetActive(true);
-        deadCam.transform.position = backCam.transform.position;
+        deadCam.transform.position = dc.transform.position;
         deadCam.transform.rotation = backCam.transform.rotation;
         hud.SetActive(false);
-        Instantiate(explosion, transform.position, Quaternion.Euler(0,0,0));
+        explosion.transform.position = transform.position;
+        explosion.Play();
         Destroy(gameObject);
 
     }
