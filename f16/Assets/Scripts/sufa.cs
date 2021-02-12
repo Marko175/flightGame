@@ -136,6 +136,8 @@ public class sufa : MonoBehaviour
     {
         RunFlightModelRotations(deltaTime);
         RunFlightModelLinear(deltaTime);
+        if (isPlayer && Input.GetKey(KeyCode.Space))
+            Gun();
 
         altitude += velocity.y * deltaTime;
         rAltitude = altitude - Terrain.activeTerrain.SampleHeight(transform.position) * Scale;
@@ -155,6 +157,14 @@ public class sufa : MonoBehaviour
         explosion.Play();
         Destroy(gameObject);
 
+    }
+
+    private void Gun()
+    {
+        
+        
+               
+        
     }
 
     private void RunFlightModelLinear(float deltaTime)
