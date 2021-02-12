@@ -101,6 +101,7 @@ public class sufa : MonoBehaviour
         velocity = transform.forward * startSpeed;
         VelocityDirection = velocity.normalized;
         flames.Stop(); // AB off
+
     }
 
 
