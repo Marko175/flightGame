@@ -81,10 +81,17 @@ public class sufa : MonoBehaviour
     public float engThrottle;
     public bool ab;
     public ParticleSystem flames;
+    public AudioSource boom;
 
 
     public static sufa Player { get; private set; } = null;
     public float Scale = 1f;
+
+    [Header("GUN INFO")]
+    float nextShot;
+    public float gunRate;
+    public GameObject bullet;
+    public GameObject gun;
 
 
     void Awake()
@@ -103,6 +110,7 @@ public class sufa : MonoBehaviour
         VelocityDirection = velocity.normalized;
         flames.Stop(); // AB off
         explosion.Stop();
+        nextShot = 0;
 
     }
 
@@ -155,14 +163,19 @@ public class sufa : MonoBehaviour
         hud.SetActive(false);
         explosion.transform.position = transform.position;
         explosion.Play();
+        boom.Play();
         Destroy(gameObject);
 
     }
 
     private void Gun()
     {
-        
-        
+        if (Time.time > nextShot)
+        {
+            GameObject newBullet = Instantiate(bullet, gun.transform.position, gun.transform.rotation) as GameObject;
+            newBullet.GetComponent<Rigidbody>().velocity = gun.transform.forward * 800f;
+            nextShot = Time.time + (1 / gunRate);
+        }
                
         
     }
