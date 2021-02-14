@@ -92,6 +92,7 @@ public class sufa : MonoBehaviour
     public float gunRate;
     public GameObject bullet;
     public GameObject gun;
+    public bool shooting;
 
 
     void Awake()
@@ -111,6 +112,7 @@ public class sufa : MonoBehaviour
         flames.Stop(); // AB off
         explosion.Stop();
         nextShot = 0;
+        shooting = false;
 
     }
 
@@ -145,7 +147,14 @@ public class sufa : MonoBehaviour
         RunFlightModelRotations(deltaTime);
         RunFlightModelLinear(deltaTime);
         if (isPlayer && Input.GetKey(KeyCode.Space))
+        {
             Gun();
+            shooting = true;
+        }
+        else
+        {
+            shooting = false;
+        }
 
         altitude += velocity.y * deltaTime;
         rAltitude = altitude - Terrain.activeTerrain.SampleHeight(transform.position) * Scale;
@@ -173,7 +182,7 @@ public class sufa : MonoBehaviour
         if (Time.time > nextShot)
         {
             GameObject newBullet = Instantiate(bullet, gun.transform.position, gun.transform.rotation) as GameObject;
-            newBullet.GetComponent<Rigidbody>().velocity = gun.transform.forward * 800f;
+            newBullet.GetComponent<Rigidbody>().velocity = gun.transform.forward * 2000f;
             nextShot = Time.time + (1 / gunRate);
         }
                

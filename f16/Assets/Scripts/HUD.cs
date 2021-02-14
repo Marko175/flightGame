@@ -1,6 +1,7 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public static class Units
 {
@@ -30,6 +31,8 @@ public class HUD : MonoBehaviour
     [Header("Flight Elements")]
     [SerializeField] private RectTransform FPM = null;
     [SerializeField] private RectTransform Horizon = null;
+    [SerializeField] private RectTransform Piper = null;
+    private List<Vector3> bulletPositions;
 
     [Header("PositiveSemiHorizon")]
     [SerializeField] private RectTransform five = null;
@@ -94,6 +97,7 @@ public class HUD : MonoBehaviour
     void Start()
     {
         player = sufa.Player;
+        bulletPositions = new List<Vector3>();
     }
 
     // Update is called once per frame
@@ -120,6 +124,8 @@ public class HUD : MonoBehaviour
         FPM.position = Camera.main.WorldToScreenPoint(velocityPos);
 
 
+
+        
         GenerateHorizon(player);
         GenerateNegHorizon(player);
 
@@ -129,6 +135,30 @@ public class HUD : MonoBehaviour
         this.transform.position = Camera.main.WorldToScreenPoint(player.transform.position +player.transform.forward * scope *120);
 
 
+    }
+
+    void FixedUpdate()
+    {
+        CalculatePiper();
+    }
+
+    private void CalculatePiper()
+    {
+        //Piper.gameObject.SetActive(player.shooting);
+        
+        Vector3 bulletPosition = player.transform.position;
+        Vector3 vel = player.gun.transform.forward * 2000f;
+
+        while ((bulletPosition - player.transform.position).magnitude < 500f)
+        {
+            vel += Physics.gravity * Time.fixedDeltaTime;
+            bulletPosition += vel * Time.fixedDeltaTime;
+        }
+        bulletPositions.Add(bulletPosition);
+        if (bulletPositions.Count > 32)
+            bulletPositions.RemoveAt(0);
+        
+        Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[0]);
     }
 
     private void GenerateNegHorizon(sufa player)
