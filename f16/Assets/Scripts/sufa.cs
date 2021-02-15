@@ -29,6 +29,7 @@ public class sufa : MonoBehaviour
     public bool useFixedUpdates = true;
     public FlightInput flightInput = new FlightInput();
     public bool isPlayer = true;
+    public float mode;
 
     [Header("Motion")]
     public float startSpeed;
@@ -90,6 +91,7 @@ public class sufa : MonoBehaviour
     [Header("GUN INFO")]
     float nextShot;
     public float gunRate;
+    public float bulletSpeed;
     public GameObject bullet;
     public GameObject gun;
     public bool shooting;
@@ -113,6 +115,8 @@ public class sufa : MonoBehaviour
         explosion.Stop();
         nextShot = 0;
         shooting = false;
+        bulletSpeed = 1200f;
+        mode = 1;
 
     }
 
@@ -146,7 +150,7 @@ public class sufa : MonoBehaviour
     {
         RunFlightModelRotations(deltaTime);
         RunFlightModelLinear(deltaTime);
-        if (isPlayer && Input.GetKey(KeyCode.Space))
+        if (isPlayer && Input.GetKey(KeyCode.Space) && mode==2)
         {
             Gun();
             shooting = true;
@@ -155,6 +159,11 @@ public class sufa : MonoBehaviour
         {
             shooting = false;
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            mode = 1;
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+            mode = 2;
 
         altitude += velocity.y * deltaTime;
         rAltitude = altitude - Terrain.activeTerrain.SampleHeight(transform.position) * Scale;
@@ -182,7 +191,7 @@ public class sufa : MonoBehaviour
         if (Time.time > nextShot)
         {
             GameObject newBullet = Instantiate(bullet, gun.transform.position, gun.transform.rotation) as GameObject;
-            newBullet.GetComponent<Rigidbody>().velocity = gun.transform.forward * 2000f;
+            newBullet.GetComponent<Rigidbody>().velocity = gun.transform.forward * bulletSpeed;
             nextShot = Time.time + (1 / gunRate);
         }
                

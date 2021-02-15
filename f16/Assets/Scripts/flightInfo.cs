@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class flightInfo : MonoBehaviour
 {
     public Text Throttle;
+    public Text Mode;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,5 +26,10 @@ public class flightInfo : MonoBehaviour
         {
             Throttle.text = "Pilpell";
         }
+
+        if (player.mode == 1)
+            Mode.text = "NAV";
+        else if (player.mode == 2)
+            Mode.text = "DGFT";
     }
 }
