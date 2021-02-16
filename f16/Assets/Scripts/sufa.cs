@@ -115,7 +115,7 @@ public class sufa : MonoBehaviour
         explosion.Stop();
         nextShot = 0;
         shooting = false;
-        bulletSpeed = 1200f;
+        bulletSpeed = 600f;
         mode = 1;
 
     }
@@ -170,7 +170,7 @@ public class sufa : MonoBehaviour
         if(-transform.up.y>-0.5)
         {
             rAltitude = -999999f;
-        }       
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -194,7 +194,8 @@ public class sufa : MonoBehaviour
             newBullet.GetComponent<Rigidbody>().velocity = gun.transform.forward * bulletSpeed;
             nextShot = Time.time + (1 / gunRate);
         }
-               
+        
+        
         
     }
 

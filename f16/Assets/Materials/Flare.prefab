@@ -4697,6 +4697,7 @@ GameObject:
   - component: {fileID: 676727288}
   - component: {fileID: 676727292}
   - component: {fileID: 7825674888038380159}
+  - component: {fileID: 413251003032562227}
   m_Layer: 0
   m_Name: Flare
   m_TagString: Untagged
@@ -9508,3 +9509,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &413251003032562227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2889102860554f84bb880cdb812ac6c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -38,6 +38,13 @@ public class HUD : MonoBehaviour
     [SerializeField] private GameObject Horizons;
     [SerializeField] private GameObject negHorizons;
 
+    [Header("Ticks")]
+    [SerializeField] private RectTransform Tick1;
+    [SerializeField] private RectTransform Tick2;
+    [SerializeField] private RectTransform Tick3;
+    [SerializeField] private RectTransform Tick4;
+
+
     [Header("PositiveSemiHorizon")]
     [SerializeField] private RectTransform five = null;
     [SerializeField] private RectTransform ten = null;
@@ -153,31 +160,42 @@ public class HUD : MonoBehaviour
     private void CalculatePiper()
     {
         Piper.gameObject.SetActive(player.mode ==2);
+        Tick1.gameObject.SetActive(player.mode ==2);
+        Tick2.gameObject.SetActive(player.mode ==2);
+        Tick3.gameObject.SetActive(player.mode ==2);
+        Tick4.gameObject.SetActive(player.mode ==2);
+
         GetComponent<LineRenderer>().enabled = (player.mode == 2);
         
         Vector3 bulletPosition = player.gun.transform.position;
         Vector3 vel = player.gun.transform.forward * player.bulletSpeed;
         float time = Time.fixedDeltaTime;
-
+        
         while ((bulletPosition - player.transform.position).magnitude < 500f)
         {
             vel += Physics.gravity * time;
             bulletPosition += vel * time;
         }
+        
 
+        
 
+        bulletPosition = Vector3.Slerp(bulletPosition, bulletPositions[bulletPositions.Count-1], Time.deltaTime *20f);
         bulletPositions.Add(bulletPosition);
 
         if (bulletPositions.Count > 40)
             bulletPositions.RemoveAt(0);
 
-        if (bulletPositions.Count > 19)
-            Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
-        else
+        if (bulletPositions.Count > 33)
         {
-            Piper.position = Vector3.Lerp(Camera.main.WorldToScreenPoint(bulletPositions[bulletPositions.Count - 1]), Piper.position, Time.deltaTime *0.002f);
-        }
+            Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
+            Tick1.position = Camera.main.WorldToScreenPoint(bulletPositions[33]);
+            Tick2.position = Camera.main.WorldToScreenPoint(bulletPositions[26]);
+            Tick3.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
+            Tick4.position = Camera.main.WorldToScreenPoint(bulletPositions[12]);
 
+        }
+        
         lineR.startWidth = 1.4f;
         lineR.endWidth = 1.4f;
         lineR.positionCount = bulletPositions.Count;
