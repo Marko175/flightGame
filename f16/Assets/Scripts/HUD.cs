@@ -23,10 +23,12 @@ public class HUD : MonoBehaviour
     public float scope = 5f;
     sufa player;
 
+
     [SerializeField] private Text velocity;
     [SerializeField] private Text g;
     [SerializeField] private Text altitude;
     [SerializeField] private Text rAlt;
+    [SerializeField] private LineRenderer lineR;
 
     [Header("Flight Elements")]
     [SerializeField] private RectTransform FPM = null;
@@ -133,6 +135,7 @@ public class HUD : MonoBehaviour
 
         GenerateHorizon(player);
         GenerateNegHorizon(player);
+        CalculatePiper();
 
         Horizons.gameObject.SetActive(player.mode == 1);
         Horizon.gameObject.SetActive(player.mode == 1);
@@ -146,34 +149,42 @@ public class HUD : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        CalculatePiper();
-    }
 
     private void CalculatePiper()
     {
         Piper.gameObject.SetActive(player.mode ==2);
+        GetComponent<LineRenderer>().enabled = (player.mode == 2);
         
-        Vector3 bulletPosition = player.transform.position;
+        Vector3 bulletPosition = player.gun.transform.position;
         Vector3 vel = player.gun.transform.forward * player.bulletSpeed;
+        float time = Time.fixedDeltaTime;
+
         while ((bulletPosition - player.transform.position).magnitude < 500f)
         {
-            vel += Physics.gravity * Time.fixedDeltaTime;
-            bulletPosition += vel * Time.fixedDeltaTime;
-
+            vel += Physics.gravity * time;
+            bulletPosition += vel * time;
         }
+
+
         bulletPositions.Add(bulletPosition);
 
-        if (bulletPositions.Count > 21)
+        if (bulletPositions.Count > 40)
             bulletPositions.RemoveAt(0);
 
+        if (bulletPositions.Count > 19)
+            Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
+        else
+        {
+            Piper.position = Vector3.Lerp(Camera.main.WorldToScreenPoint(bulletPositions[bulletPositions.Count - 1]), Piper.position, Time.deltaTime *0.002f);
+        }
 
-        Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[0]);
-
+        lineR.startWidth = 1.4f;
+        lineR.endWidth = 1.4f;
+        lineR.positionCount = bulletPositions.Count;
+        lineR.SetPositions(bulletPositions.ToArray());
     }
 
-
+   
 
     private void GenerateNegHorizon(sufa player)
     {

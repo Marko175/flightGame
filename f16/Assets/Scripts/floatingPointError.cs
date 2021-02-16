@@ -11,7 +11,7 @@ public class floatingPointError : MonoBehaviour
     void Start()
     {
         player = sufa.Player;
-        threshhold = 100;
+        threshhold = 1f;
     }
 
     // Update is called once per frame
