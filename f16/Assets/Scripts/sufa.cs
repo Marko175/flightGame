@@ -96,6 +96,12 @@ public class sufa : MonoBehaviour
     public GameObject gun;
     public bool shooting;
 
+    [Header("RADAR INFO")]
+    public float targetDistance;
+    public float closeVelocity;
+    public GameObject target;
+    
+
 
     void Awake()
     {
@@ -150,7 +156,7 @@ public class sufa : MonoBehaviour
     {
         RunFlightModelRotations(deltaTime);
         RunFlightModelLinear(deltaTime);
-        if (isPlayer && Input.GetKey(KeyCode.Space) && mode==2)
+        if (isPlayer && (Input.GetKey(KeyCode.Space)||Input.GetKey(KeyCode.Mouse0)) && mode==2)
         {
             Gun();
             shooting = true;
@@ -159,6 +165,19 @@ public class sufa : MonoBehaviour
         {
             shooting = false;
         }
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            GetTarget();
+        }
+
+        if (target != null)
+        {
+            closeVelocity = (targetDistance - (target.transform.position - transform.position).magnitude)/Time.deltaTime;
+            targetDistance = (target.transform.position - transform.position).magnitude;
+            
+        }
+
+
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
             mode = 1;
@@ -252,12 +271,12 @@ public class sufa : MonoBehaviour
         if (Input.GetButton("Fire3"))
         {
             targetThrottle = 1f;
-            throttleSpeed = .25f;
+            throttleSpeed = .75f;
         }
         else if (Input.GetButton("Fire2"))
         {
             targetThrottle = 0f;
-            throttleSpeed = .25f;
+            throttleSpeed = .75f;
             flightInput.Reheat = false;
             flames.Stop();
         }
@@ -349,6 +368,28 @@ public class sufa : MonoBehaviour
         throttle();
     }
 
+    private void GetTarget()
+    {
+        GameObject[] targets = GameObject.FindGameObjectsWithTag("enemy");
+        List<GameObject> targetList = new List<GameObject>();
+
+        foreach (GameObject a in targets)
+        {
+            if (a.transform.parent == null && Vector3.Angle(transform.forward, -(transform.position - a.transform.position)) < 60)
+                targetList.Add(a);
+        }
+
+        if (targetList.Count > 0)
+        {
+            target = targetList[0];
+            foreach (GameObject a in targetList)
+            {
+                if ((a.transform.position - transform.position).magnitude < (target.transform.position - transform.position).magnitude)
+                    target = a;
+            }
+        }
+        
+    }
 
 }
 

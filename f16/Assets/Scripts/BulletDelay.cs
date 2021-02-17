@@ -10,7 +10,7 @@ public class BulletDelay : MonoBehaviour
     float time;
     void Start()
     {
-        delayTime = 0.3f;
+        delayTime = 0.1f;
         killTime = 2.5f;
         
         Invoke("EnableBoxCollider", delayTime);

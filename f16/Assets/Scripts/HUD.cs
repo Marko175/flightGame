@@ -20,7 +20,7 @@ public class HUD : MonoBehaviour
 {
     private float nextActionTime = 0.0f;
     public float period = 0.2f;
-    public float scope = 5f;
+    public float scope = 8f;
     sufa player;
 
 
@@ -37,6 +37,9 @@ public class HUD : MonoBehaviour
     private List<Vector3> bulletPositions;
     [SerializeField] private GameObject Horizons;
     [SerializeField] private GameObject negHorizons;
+    [SerializeField] private RectTransform TDB;
+    [SerializeField] private Text FCRDistance;
+    [SerializeField] private Text FCRClosing;
 
     [Header("Ticks")]
     [SerializeField] private RectTransform Tick1;
@@ -138,6 +141,19 @@ public class HUD : MonoBehaviour
         FPM.position = Camera.main.WorldToScreenPoint(velocityPos);
         FPM.gameObject.SetActive(player.mode == 1);
 
+        if (player.target == null)
+        {
+            TDB.gameObject.SetActive(false);
+            FCRDistance.gameObject.SetActive(false);
+        }
+        else {
+            TDB.gameObject.SetActive(true);
+            FCRDistance.gameObject.SetActive(true);
+            FCRDistance.text = (player.targetDistance/30).ToString("n0");
+            FCRClosing.text = (Mathf.Round(Units.toKnots((player.closeVelocity))/10) * 10).ToString("0");
+            TDB.position = Camera.main.WorldToScreenPoint(5 * player.transform.position + (player.target.transform.position - player.transform.position));
+        }
+
 
 
         GenerateHorizon(player);
@@ -170,12 +186,28 @@ public class HUD : MonoBehaviour
         Vector3 bulletPosition = player.gun.transform.position;
         Vector3 vel = player.gun.transform.forward * player.bulletSpeed;
         float time = Time.fixedDeltaTime;
-        
-        while ((bulletPosition - player.transform.position).magnitude < 500f)
+        float timeCount =0;
+        float targetTime = 0;
+        float dis = 300;
+
+        if (player.target != null)
+            dis = player.targetDistance;
+
+
+        while ((bulletPosition - player.transform.position).magnitude < 500)
         {
             vel += Physics.gravity * time;
             bulletPosition += vel * time;
+            timeCount += time;
+
+            if(player.targetDistance< (bulletPosition - player.transform.position).magnitude)
+                    targetTime += time;
         }
+
+        float piperFrame = dis / 500;
+        if (piperFrame > 1)
+            piperFrame = 1;
+
         
 
         
@@ -188,7 +220,11 @@ public class HUD : MonoBehaviour
 
         if (bulletPositions.Count > 33)
         {
-            Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
+            if(player.target == null)
+                Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
+            else
+                Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[39-Mathf.RoundToInt(piperFrame * 39)]);
+
             Tick1.position = Camera.main.WorldToScreenPoint(bulletPositions[33]);
             Tick2.position = Camera.main.WorldToScreenPoint(bulletPositions[26]);
             Tick3.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);

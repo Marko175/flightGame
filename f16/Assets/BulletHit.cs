@@ -18,9 +18,8 @@ public class BulletHit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var r = other.gameObject.GetComponent<Renderer>();
-        r.material.SetColor("rand",Color.red);
-
-        other.gameObject.transform.localScale *= 0.5f;
+        Debug.Log((other.gameObject.transform.position - sufa.Player.transform.position).magnitude);
+        if (other.gameObject.tag == "enemy")
+            other.gameObject.GetComponentInParent<PracticeTarget>().Die();
     }
 }

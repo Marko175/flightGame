@@ -9,6 +9,7 @@ TagManager:
   - scaleable
   - semihorizon
   - HUD
+  - enemy
   layers:
   - Default
   - TransparentFX
