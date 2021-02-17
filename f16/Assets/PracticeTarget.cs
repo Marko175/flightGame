@@ -33,6 +33,7 @@ public class PracticeTarget : MonoBehaviour
         ParticleSystem e = Instantiate(explode);
         e.transform.position = transform.position;
         e.Play();
-        Destroy(gameObject);
+
+//        Destroy(gameObject);
     }
 }

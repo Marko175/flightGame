@@ -208,10 +208,10 @@ public class HUD : MonoBehaviour
         if (piperFrame > 1)
             piperFrame = 1;
 
-        
 
-        
 
+
+        bulletPosition = bulletPosition.normalized * 500f;
         bulletPosition = Vector3.Slerp(bulletPosition, bulletPositions[bulletPositions.Count-1], Time.deltaTime *20f);
         bulletPositions.Add(bulletPosition);
 
