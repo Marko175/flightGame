@@ -105,7 +105,7 @@ public class sufa : MonoBehaviour
 
     void Awake()
     {
-        Application.targetFrameRate = 70; // Sets target FPS
+        Application.targetFrameRate = 0; // Sets target FPS
         SetCam(); // Sets active camera + hud
 
         if (isPlayer)//Sets global player
