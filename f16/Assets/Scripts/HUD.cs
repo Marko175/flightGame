@@ -26,9 +26,11 @@ public class HUD : MonoBehaviour
 
     [SerializeField] private Text velocity;
     [SerializeField] private Text g;
+    [SerializeField] private Text angle;
     [SerializeField] private Text altitude;
     [SerializeField] private Text rAlt;
     [SerializeField] private LineRenderer lineR;
+    [SerializeField] private LineRenderer lineTLL;
 
     [Header("Flight Elements")]
     [SerializeField] private RectTransform FPM = null;
@@ -37,6 +39,8 @@ public class HUD : MonoBehaviour
     private List<Vector3> bulletPositions;
     [SerializeField] private GameObject Horizons;
     [SerializeField] private GameObject negHorizons;
+    [SerializeField] private GameObject TLL;
+    [SerializeField] private Quaternion TLLRotation;
     [SerializeField] private RectTransform TDB;
     [SerializeField] private Text FCRDistance;
     [SerializeField] private Text FCRClosing;
@@ -115,6 +119,7 @@ public class HUD : MonoBehaviour
         bulletPositions.Add(Vector3.zero);
         bulletPositions.Add(Vector3.zero);
         bulletPositions.Add(Vector3.zero);
+        TLLRotation = TLL.transform.rotation;
     }
 
     // Update is called once per frame
@@ -151,11 +156,11 @@ public class HUD : MonoBehaviour
             FCRDistance.gameObject.SetActive(true);
             FCRDistance.text = (player.targetDistance/30).ToString("n0");
             FCRClosing.text = (Mathf.Round(Units.toKnots((player.closeVelocity))/10) * 10).ToString("0");
-            TDB.position = Camera.main.WorldToScreenPoint(5 * player.transform.position + (player.target.transform.position - player.transform.position));
+            TDB.position = Camera.main.WorldToScreenPoint(player.transform.position + ((player.target.transform.position-player.transform.position).normalized *30f));
         }
 
 
-
+        GenerateTLL();
         GenerateHorizon(player);
         GenerateNegHorizon(player);
         CalculatePiper();
@@ -172,6 +177,33 @@ public class HUD : MonoBehaviour
 
     }
 
+    private void GenerateTLL()
+    {
+        if (player.target == null)
+            return;
+        TLL.GetComponent<LineRenderer>().enabled = (player.target != null);
+        lineTLL.startWidth = 0.0015f;
+        lineTLL.endWidth = 0.0015f;
+        lineTLL.positionCount = 2;
+        lineTLL.SetPosition(0, new Vector3(0,0, 0));
+        Vector3 tll = Vector3.ProjectOnPlane((player.target.transform.position - TLL.transform.position), player.transform.forward).normalized * 0.05f ;
+        TLL.transform.rotation = TLLRotation;
+
+        lineTLL.enabled = !RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), TDB.position);
+        float a = Mathf.Round(Vector3.Angle(player.transform.position + player.transform.forward, player.transform.position + (player.target.transform.position - player.transform.position))/10) *10;
+        TDB.gameObject.SetActive(RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), TDB.position));
+        angle.gameObject.SetActive(!RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), TDB.position));
+        if (a > 90)
+        {
+            TDB.gameObject.SetActive(false);
+            angle.gameObject.SetActive(true);
+        }
+
+        angle.text = a.ToString("n0");
+
+
+        lineTLL.SetPosition(1, tll);
+    }
 
     private void CalculatePiper()
     {
