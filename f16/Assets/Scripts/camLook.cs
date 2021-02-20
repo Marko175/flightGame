@@ -24,7 +24,7 @@ public class camLook : MonoBehaviour
     bool zoomed;
 
 
-    public float Response = 10;
+    public float Response = 3;
     void Start()
     {
         originalRotation = transform.localRotation;
@@ -38,7 +38,7 @@ public class camLook : MonoBehaviour
     }
     void FixedUpdate()
     {
-
+        
         RotateCamera();
         if (Input.GetKey(KeyCode.Mouse1))
         {
@@ -73,21 +73,32 @@ public class camLook : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Mouse2))
         {
-            rotationX += Input.GetAxis("Mouse X") * sensitivityX;
-            rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-            Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
-            Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, Vector3.left);
 
-            
+            Quaternion target = transform.rotation;
+            if (sufa.Player.target != null)
+            {
+                Vector3 relativePos = sufa.Player.target.transform.position - transform.position;
+                if(Vector3.Angle(transform.forward, sufa.Player.target.transform.position)<90)
+                    target = Quaternion.LookRotation(relativePos, transform.up);
+                else
+                    target = Quaternion.LookRotation(relativePos, -transform.up);
+                transform.rotation = Damp(transform.rotation, target, Response, Time.deltaTime * 0.4f);
+            }
+            else
+            {
+                rotationX += Input.GetAxis("Mouse X") * sensitivityX;
+                rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+                Quaternion xQuaternion = Quaternion.AngleAxis(rotationX, Vector3.up);
+                Quaternion yQuaternion = Quaternion.AngleAxis(rotationY, Vector3.left);
+                target = originalRotation * xQuaternion * yQuaternion;
+                transform.localRotation = Damp(transform.localRotation, target, Response, Time.deltaTime * 0.7f);
+            }
 
 
-            Quaternion target = originalRotation * xQuaternion * yQuaternion;
-            transform.localRotation = Damp(transform.localRotation, target, Response, Time.deltaTime);
-
-
-
-            if (target.eulerAngles.y < 90 || target.eulerAngles.y > 270 || !(name.Equals("HudCam")))
+            if (Vector3.Angle(transform.forward, sufa.Player.transform.forward)>80 || !(name.Equals("HudCam")))
+            {
                 hud.SetActive(false);
+            }
             else
                 hud.SetActive(true);
 
@@ -104,7 +115,7 @@ public class camLook : MonoBehaviour
             }
 
             Quaternion target = originalRotation;
-            transform.localRotation = Damp(transform.localRotation, target, Response, Time.deltaTime);
+            transform.localRotation = Damp(transform.localRotation, target, Response, Time.deltaTime*0.5f);
 
         }
 

@@ -247,15 +247,16 @@ public class HUD : MonoBehaviour
         bulletPosition = Vector3.Slerp(bulletPosition, bulletPositions[bulletPositions.Count-1], Time.deltaTime *20f);
         bulletPositions.Add(bulletPosition);
 
+
         if (bulletPositions.Count > 40)
             bulletPositions.RemoveAt(0);
 
         if (bulletPositions.Count > 33)
         {
-            if(player.target == null)
+            if (player.target == null)
                 Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
             else
-                Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[39-Mathf.RoundToInt(piperFrame * 39)]);
+                Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[39 - Mathf.RoundToInt(piperFrame * 39)]);
 
             Tick1.position = Camera.main.WorldToScreenPoint(bulletPositions[33]);
             Tick2.position = Camera.main.WorldToScreenPoint(bulletPositions[26]);
