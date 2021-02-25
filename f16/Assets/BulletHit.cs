@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class BulletHit : MonoBehaviour
 {
+    public RectTransform batter;
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log((other.gameObject.transform.position - sufa.Player.transform.position).magnitude);
         if (other.gameObject.tag == "enemy")
             other.gameObject.GetComponentInParent<PracticeTarget>().Die();
     }

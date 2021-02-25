@@ -122,7 +122,7 @@ public class sufa : MonoBehaviour
         explosion.Stop();
         nextShot = 0;
         shooting = false;
-        bulletSpeed = 600f;
+        bulletSpeed = 1200f;
         mode = 1;
 
     }
@@ -193,6 +193,7 @@ public class sufa : MonoBehaviour
         }
     }
 
+
     void OnCollisionEnter(Collision collision)
     {
         deadCam.gameObject.SetActive(true);
@@ -213,10 +214,7 @@ public class sufa : MonoBehaviour
             GameObject newBullet = Instantiate(bullet, gun.transform.position, gun.transform.rotation) as GameObject;
             newBullet.GetComponent<Rigidbody>().velocity = gun.transform.forward * bulletSpeed;
             nextShot = Time.time + (1 / gunRate);
-        }
-        
-        
-        
+        }      
     }
 
     private void RunFlightModelLinear(float deltaTime)
@@ -448,3 +446,5 @@ public static class Maths
     }
 
 }
+
+

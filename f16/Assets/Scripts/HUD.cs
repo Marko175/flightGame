@@ -37,6 +37,8 @@ public class HUD : MonoBehaviour
     [SerializeField] private RectTransform Horizon = null;
     [SerializeField] private RectTransform Piper = null;
     private List<Vector3> bulletPositions;
+    private List<GameObject> bulletPositions_new;
+    public GameObject bulletObj;
     [SerializeField] private GameObject Horizons;
     [SerializeField] private GameObject negHorizons;
     [SerializeField] private GameObject TLL;
@@ -109,6 +111,8 @@ public class HUD : MonoBehaviour
     [SerializeField] private RectTransform neighty_over = null;
     [SerializeField] private RectTransform neightyfive_over = null;
 
+    private Vector3 originalScale;
+
 
 
     // Start is called before the first frame update
@@ -116,10 +120,12 @@ public class HUD : MonoBehaviour
     {
         player = sufa.Player;
         bulletPositions = new List<Vector3>();
+        bulletPositions_new = new List<GameObject>();
         bulletPositions.Add(Vector3.zero);
         bulletPositions.Add(Vector3.zero);
         bulletPositions.Add(Vector3.zero);
         TLLRotation = TLL.transform.rotation;
+        originalScale = transform.localScale;
     }
 
     // Update is called once per frame
@@ -205,6 +211,16 @@ public class HUD : MonoBehaviour
         lineTLL.SetPosition(1, tll);
     }
 
+    public void Hide()
+    {
+        transform.localScale = new Vector3(0,0,0);
+    }
+
+    public void unHide()
+    {
+        transform.localScale = originalScale;
+    }
+
     private void CalculatePiper()
     {
         Piper.gameObject.SetActive(player.mode ==2);
@@ -214,59 +230,49 @@ public class HUD : MonoBehaviour
         Tick4.gameObject.SetActive(player.mode ==2);
 
         GetComponent<LineRenderer>().enabled = (player.mode == 2);
-        
-        Vector3 bulletPosition = player.gun.transform.position;
-        Vector3 vel = player.gun.transform.forward * player.bulletSpeed;
-        float time = Time.fixedDeltaTime;
-        float timeCount =0;
-        float targetTime = 0;
+       
         float dis = 300;
 
         if (player.target != null)
             dis = player.targetDistance;
 
+        GameObject newBullet = Instantiate(bulletObj);
+        newBullet.transform.position = sufa.Player.transform.position;
+        newBullet.GetComponent<Rigidbody>().velocity = sufa.Player.gun.transform.forward * sufa.Player.bulletSpeed;
+        GameObject piperBullet = newBullet;
 
-        while ((bulletPosition - player.transform.position).magnitude < 500)
+        bulletPositions_new.Add(newBullet);
+        bulletPositions.Clear();
+        foreach (GameObject a in bulletPositions_new)
         {
-            vel += Physics.gravity * time;
-            bulletPosition += vel * time;
-            timeCount += time;
-
-            if(player.targetDistance< (bulletPosition - player.transform.position).magnitude)
-                    targetTime += time;
+            if (a != null)
+            {
+                if (Math.Abs((a.transform.position - player.gun.transform.position).magnitude - dis) < Math.Abs((piperBullet.transform.position - player.gun.transform.position).magnitude - dis))
+                    piperBullet = a;
+                bulletPositions.Add((a.transform.position - player.gun.transform.position).normalized * 500f);
+            }
         }
 
-        float piperFrame = dis / 500;
-        if (piperFrame > 1)
-            piperFrame = 1;
-
-
-
-
-        bulletPosition = bulletPosition.normalized * 500f;
-        bulletPosition = Vector3.Slerp(bulletPosition, bulletPositions[bulletPositions.Count-1], Time.deltaTime *20f);
-        bulletPositions.Add(bulletPosition);
-
-
-        if (bulletPositions.Count > 40)
-            bulletPositions.RemoveAt(0);
-
-        if (bulletPositions.Count > 33)
+        if (bulletPositions_new.Count > 75)
         {
-            if (player.target == null)
-                Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
-            else
-                Piper.position = Camera.main.WorldToScreenPoint(bulletPositions[39 - Mathf.RoundToInt(piperFrame * 39)]);
-
-            Tick1.position = Camera.main.WorldToScreenPoint(bulletPositions[33]);
-            Tick2.position = Camera.main.WorldToScreenPoint(bulletPositions[26]);
-            Tick3.position = Camera.main.WorldToScreenPoint(bulletPositions[19]);
-            Tick4.position = Camera.main.WorldToScreenPoint(bulletPositions[12]);
-
+            bulletPositions_new.RemoveAt(0);
         }
+
+        if (bulletPositions.Count > 71)
+        {
+            Piper.position = Camera.main.WorldToScreenPoint((piperBullet.transform.position - player.gun.transform.position).normalized * 500);
+            Tick1.position = Camera.main.WorldToScreenPoint(bulletPositions[70]);
+            Tick2.position = Camera.main.WorldToScreenPoint(bulletPositions[50]);
+            Tick3.position = Camera.main.WorldToScreenPoint(bulletPositions[30]);
+            Tick4.position = Camera.main.WorldToScreenPoint(bulletPositions[10]);
+        }
+
         
-        lineR.startWidth = 1.4f;
-        lineR.endWidth = 1.4f;
+
+
+
+        lineR.startWidth = 1.5f;
+        lineR.endWidth = 1.5f;
         lineR.positionCount = bulletPositions.Count;
         lineR.SetPositions(bulletPositions.ToArray());
     }
@@ -498,5 +504,25 @@ public class HUD : MonoBehaviour
         }
 
 
+    }
+}
+
+public class VirtualBullet
+{
+    public Vector3 position;
+    public Vector3 velocity;
+    public float timeAlive;
+    public VirtualBullet(Vector3 pos, Vector3 vel)
+    {
+        position = pos;
+        velocity = vel;
+        timeAlive = 0;
+    }
+
+    public void UpdateBullet(float time, Vector3 acceleration)
+    {
+        velocity += acceleration * time;
+        position += velocity * time;
+        timeAlive += time;
     }
 }

@@ -2516,6 +2516,7 @@ MonoBehaviour:
   FPM: {fileID: 1646062921}
   Horizon: {fileID: 2008444877}
   Piper: {fileID: 1011037895}
+  bulletObj: {fileID: 100006, guid: 3bb08b1ba1f4b98429bb1d9837577de1, type: 3}
   Horizons: {fileID: 1137432101}
   negHorizons: {fileID: 1770540029}
   TLL: {fileID: 576336204}

@@ -13,7 +13,8 @@ public class BulletDelay : MonoBehaviour
         delayTime = 0.1f;
         killTime = 2.5f;
         
-        Invoke("EnableBoxCollider", delayTime);
+        if(GetComponent<BoxCollider>()!= null)
+            Invoke("EnableBoxCollider", delayTime);
         Invoke("Kill", killTime);
     }
 
@@ -24,8 +25,8 @@ public class BulletDelay : MonoBehaviour
     }
 
     void EnableBoxCollider()
-    { 
-        this.GetComponent<BoxCollider>().enabled = true;
+    {
+        GetComponent<BoxCollider>().enabled = true;
     }
 
     private void Kill()

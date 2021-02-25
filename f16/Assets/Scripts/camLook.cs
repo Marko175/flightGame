@@ -40,7 +40,7 @@ public class camLook : MonoBehaviour
     {
         
         RotateCamera();
-        if (Input.GetKey(KeyCode.Mouse1))
+        if (Input.GetKey(KeyCode.Z))
         {
             zoomed = true;
             float targetZoom = originalZoom - 15f;
@@ -71,7 +71,7 @@ public class camLook : MonoBehaviour
     
         void RotateCamera()
     {
-        if (Input.GetKey(KeyCode.Mouse2))
+        if (Input.GetKey(KeyCode.X))
         {
 
             Quaternion target = transform.rotation;
@@ -97,21 +97,21 @@ public class camLook : MonoBehaviour
 
             if (Vector3.Angle(transform.forward, sufa.Player.transform.forward)>80 || !(name.Equals("HudCam")))
             {
-                hud.SetActive(false);
+                hud.GetComponent<HUD>().Hide();
             }
             else
-                hud.SetActive(true);
+                hud.GetComponent<HUD>().unHide();
 
 
         }
-        else if(!Input.GetKey(KeyCode.Mouse2))
+        else if(!Input.GetKey(KeyCode.X))
         {
             rotationX = 0;
             rotationY = 0;
 
             if (name.Equals("HudCam"))
             {
-                hud.SetActive(true);
+                hud.GetComponent<HUD>().unHide();
             }
 
             Quaternion target = originalRotation;
