@@ -43,8 +43,8 @@ public class sufa : MonoBehaviour
     [Header("Drag")]
     public float Drag = 1.5f;
     public float InducedDrag = .75f;
-    public float DynamicStallSpeed  = 77f;
-    public float StallAOA = 15f;
+    public float DynamicStallSpeed  = 65f;
+    public float StallAOA = 18f;
     public float Responsiveness = 3f;
 
     [Header("Thrust to Weight")]
@@ -167,9 +167,9 @@ public class sufa : MonoBehaviour
             shooting = false;
         }
         if (Input.GetKeyDown(KeyCode.R))
-        {
             GetTarget();
-        }
+        if (Input.GetKeyDown(KeyCode.T))
+            target = null;
 
         if (target != null)
         {

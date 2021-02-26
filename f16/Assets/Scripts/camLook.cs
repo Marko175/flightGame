@@ -49,7 +49,8 @@ public class camLook : MonoBehaviour
 
 
             Vector3 targetScale = originalScale * hudZoom;
-            hud.transform.localScale = originalScale + (targetScale-originalScale) * ratio1;
+            if(!hud.gameObject.GetComponent<HUD>().hide)
+                hud.transform.localScale = originalScale + (targetScale-originalScale) * ratio1;
             updatedScale = hud.transform.localScale;
             updatedZoom = cam.fieldOfView;
 
@@ -61,7 +62,8 @@ public class camLook : MonoBehaviour
             cam.fieldOfView = Mathf.SmoothDamp(cam.fieldOfView, targetZoom, ref vel1, Time.deltaTime, 100);
             float ratio2 = (cam.fieldOfView - targetZoom) / (updatedZoom - targetZoom);
 
-            hud.transform.localScale = originalScale + (updatedScale - originalScale) * ratio2;
+            if (!hud.gameObject.GetComponent<HUD>().hide)
+                hud.transform.localScale = originalScale + (updatedScale - originalScale) * ratio2;
             vel1 = 0;
 
         }

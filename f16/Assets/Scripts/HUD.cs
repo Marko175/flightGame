@@ -22,6 +22,7 @@ public class HUD : MonoBehaviour
     public float period = 0.2f;
     public float scope = 8f;
     sufa player;
+    public bool hide;
 
 
     [SerializeField] private Text velocity;
@@ -126,6 +127,7 @@ public class HUD : MonoBehaviour
         bulletPositions.Add(Vector3.zero);
         TLLRotation = TLL.transform.rotation;
         originalScale = transform.localScale;
+        hide = false;
     }
 
     // Update is called once per frame
@@ -186,7 +188,11 @@ public class HUD : MonoBehaviour
     private void GenerateTLL()
     {
         if (player.target == null)
+        {
+            angle.gameObject.SetActive(false);
+            TLL.GetComponent<LineRenderer>().enabled = false;
             return;
+        }
         TLL.GetComponent<LineRenderer>().enabled = (player.target != null);
         lineTLL.startWidth = 0.0015f;
         lineTLL.endWidth = 0.0015f;
@@ -195,8 +201,8 @@ public class HUD : MonoBehaviour
         Vector3 tll = Vector3.ProjectOnPlane((player.target.transform.position - TLL.transform.position), player.transform.forward).normalized * 0.05f ;
         TLL.transform.rotation = TLLRotation;
 
-        lineTLL.enabled = !RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), TDB.position);
         float a = Mathf.Round(Vector3.Angle(player.transform.position + player.transform.forward, player.transform.position + (player.target.transform.position - player.transform.position))/10) *10;
+        lineTLL.enabled = (!RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), TDB.position)|| a>90);
         TDB.gameObject.SetActive(RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), TDB.position));
         angle.gameObject.SetActive(!RectTransformUtility.RectangleContainsScreenPoint(GetComponent<RectTransform>(), TDB.position));
         if (a > 90)
@@ -214,11 +220,13 @@ public class HUD : MonoBehaviour
     public void Hide()
     {
         transform.localScale = new Vector3(0,0,0);
+        hide = true;
     }
 
     public void unHide()
     {
         transform.localScale = originalScale;
+        hide = false;
     }
 
     private void CalculatePiper()
@@ -229,7 +237,7 @@ public class HUD : MonoBehaviour
         Tick3.gameObject.SetActive(player.mode ==2);
         Tick4.gameObject.SetActive(player.mode ==2);
 
-        GetComponent<LineRenderer>().enabled = (player.mode == 2);
+        lineR.enabled = (player.mode == 2);
        
         float dis = 300;
 
@@ -507,22 +515,3 @@ public class HUD : MonoBehaviour
     }
 }
 
-public class VirtualBullet
-{
-    public Vector3 position;
-    public Vector3 velocity;
-    public float timeAlive;
-    public VirtualBullet(Vector3 pos, Vector3 vel)
-    {
-        position = pos;
-        velocity = vel;
-        timeAlive = 0;
-    }
-
-    public void UpdateBullet(float time, Vector3 acceleration)
-    {
-        velocity += acceleration * time;
-        position += velocity * time;
-        timeAlive += time;
-    }
-}

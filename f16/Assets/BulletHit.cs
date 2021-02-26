@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletHit : MonoBehaviour
 {
-    public RectTransform batter;
+    public ParticleSystem groundHit;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,5 +21,13 @@ public class BulletHit : MonoBehaviour
     {
         if (other.gameObject.tag == "enemy")
             other.gameObject.GetComponentInParent<PracticeTarget>().Die();
+        if (other.gameObject.name == "Terrain")
+        {
+            ParticleSystem e = Instantiate(groundHit);
+            e.transform.position = transform.position;
+            e.Play();
+        }
+        Destroy(gameObject);
+
     }
 }
