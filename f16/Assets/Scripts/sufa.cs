@@ -25,11 +25,13 @@ public class sufa : MonoBehaviour
     public GameObject dc;
     public GameObject hud;
     public ParticleSystem explosion;
+    public ParticleSystem explode;
     public bool cam;
     public bool useFixedUpdates = true;
     public FlightInput flightInput = new FlightInput();
     public bool isPlayer = true;
     public float mode;
+    public GameObject lulav;
 
     [Header("Motion")]
     public float startSpeed;
@@ -105,67 +107,84 @@ public class sufa : MonoBehaviour
 
     void Awake()
     {
-        Application.targetFrameRate = 300;
-        QualitySettings.vSyncCount = 0;
-        SetCam(); // Sets active camera + hud
-
-        if (isPlayer)//Sets global player
+        if (isPlayer)
+        {
             Player = this;
-
+            SetCam();
+            mode = 1;
+            flames.Stop(); // AB off
+        }
         //Initial stats
         startSpeed = 200f;//mps
         Speed = startSpeed;
         altitude = transform.position.y;
         velocity = transform.forward * startSpeed;
         VelocityDirection = velocity.normalized;
-        flames.Stop(); // AB off
         explosion.Stop();
         nextShot = 0;
         shooting = false;
         bulletSpeed = 1200f;
-        mode = 1;
-
     }
 
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (isPlayer)
         {
-            cam = !cam;
-            SetCam();
+            getPlayerInput();
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                cam = !cam;
+                SetCam();
+            }
         }
-        getPlayerInput();
+        else
+            getAIInput();
     }
+
+    
 
     void FixedUpdate()
     {
-        
         RunModel(Time.deltaTime);
-        
     }
 
     private void SetCam()
     {
+        if (!isPlayer)
+            return;
         backCam.gameObject.SetActive(cam);
         hudCam.gameObject.SetActive(!cam);
         deadCam.gameObject.SetActive(false);
-        hud.SetActive(!cam);
+        if (cam)
+            hud.GetComponent<HUD>().Hide();
+        else if(!cam && hud.GetComponent<HUD>().hide)
+            hud.GetComponent<HUD>().unHide();
     }
 
     private void RunModel(float deltaTime)
     {
         RunFlightModelRotations(deltaTime);
         RunFlightModelLinear(deltaTime);
-        if (isPlayer && (Input.GetKey(KeyCode.Space)||Input.GetKey(KeyCode.Mouse0)) && mode==2)
-        {
-            Gun();
-            shooting = true;
-        }
-        else
-        {
-            shooting = false;
-        }
+        RunShootingModel();
+
+        if (isPlayer)
+            RunPlayerAvionics();  
+    }
+
+    public void Die()
+    {
+        ParticleSystem e = Instantiate(explode);
+        e.transform.position = transform.position;
+        boom.Play();
+
+        e.Play();
+
+        //        Destroy(gameObject);
+    }
+
+    private void RunPlayerAvionics()
+    {
         if (Input.GetKeyDown(KeyCode.R))
             GetTarget();
         if (Input.GetKeyDown(KeyCode.T))
@@ -173,37 +192,68 @@ public class sufa : MonoBehaviour
 
         if (target != null)
         {
-            closeVelocity = (targetDistance - (target.transform.position - transform.position).magnitude)/Time.deltaTime;
+            closeVelocity = (targetDistance - (target.transform.position - transform.position).magnitude) / Time.deltaTime;
             targetDistance = (target.transform.position - transform.position).magnitude;
-            
         }
-
-
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
             mode = 1;
         else if (Input.GetKeyDown(KeyCode.Alpha2))
             mode = 2;
-
-        altitude += velocity.y * deltaTime;
-        rAltitude = altitude - Terrain.activeTerrain.SampleHeight(transform.position) * Scale;
-        if(-transform.up.y>-0.5)
-        {
-            rAltitude = -999999f;
-        }
     }
 
+    private void RunShootingModel()
+    {
+        if (isPlayer)
+        {
+            if ((Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0)) && mode == 2)
+            {
+                Gun();
+                shooting = true;
+            }
+            else
+                shooting = false;
+
+            if ((Input.GetKeyDown(KeyCode.M) || Input.GetKey(KeyCode.Mouse0)) && mode == 2)
+            {
+                GameObject missile = Instantiate(lulav, lulav.transform.position, lulav.transform.rotation);
+                missile.GetComponent<Rocket>().target = target;
+                missile.GetComponent<Rocket>().speed = Speed;
+                missile.GetComponent<Rocket>().velocity = velocity;
+                missile.GetComponent<Rocket>().shot = true;
+                Destroy(lulav);
+                
+            }
+        }
+        else
+            return; //////////////////////////////////////////////AI SHOOTING
+    }
 
     void OnCollisionEnter(Collision collision)
     {
-        deadCam.gameObject.SetActive(true);
-        deadCam.transform.position = dc.transform.position;
-        deadCam.transform.rotation = backCam.transform.rotation;
-        hud.SetActive(false);
-        explosion.transform.position = transform.position;
-        explosion.Play();
-        boom.Play();
-        Destroy(gameObject);
+        if (isPlayer)
+        {
+            deadCam.gameObject.SetActive(true);
+            deadCam.transform.position = dc.transform.position;
+            deadCam.transform.rotation = backCam.transform.rotation;
+            hud.SetActive(false);
+            Player = null;
+            explosion.transform.position = transform.position;
+            explosion.Play();
+            boom.enabled = true;
+            boom.Play();
+            Destroy(gameObject);
+            return;
+        }
+        else
+        {
+            boom.enabled = true;
+            boom.Play();
+            Destroy(gameObject);
+        }
+            
+
+        
 
     }
 
@@ -257,13 +307,16 @@ public class sufa : MonoBehaviour
 
         velocity = VelocityDirection * Speed;
         transform.position += velocity * Scale * deltaTime;
+
+        altitude += velocity.y * deltaTime;
+        rAltitude = altitude - Terrain.activeTerrain.SampleHeight(transform.position) * Scale;
+        if (-transform.up.y > -0.5)
+        {
+            rAltitude = -999999f;
+        }
     }
 
-
-
-
-
-    private void throttle()
+    private void PlayerThrottle()
     {
         float targetThrottle;
         float throttleSpeed;
@@ -364,7 +417,29 @@ public class sufa : MonoBehaviour
         flightInput.roll = Input.GetAxis("Horizontal");
         flightInput.pitch = Input.GetAxis("Vertical");
         flightInput.yaw = Input.GetAxis("qe");
-        throttle();
+        PlayerThrottle();
+    }
+
+    private void getAIInput()
+    {
+        if (Player == null)
+            return;
+        Vector3 toPlayer = (Player.transform.position-transform.position).normalized;
+
+        Vector3 rollVector = Vector3.ProjectOnPlane(toPlayer, transform.forward);
+        
+        if(Vector3.SignedAngle(rollVector, transform.up, transform.forward)>0)
+            flightInput.roll =  (Vector3.Cross(rollVector, transform.up)).magnitude;
+        else
+            flightInput.roll = -(Vector3.Cross(rollVector, transform.up)).magnitude;
+
+        Vector3 pitchVector = Vector3.ProjectOnPlane(toPlayer, transform.right);
+
+        flightInput.pitch = -(Vector3.Cross(pitchVector, transform.forward)).magnitude;
+        //flightInput.Reheat = true;
+
+
+
     }
 
     private void GetTarget()

@@ -19,7 +19,7 @@ public class DeadCam : MonoBehaviour
     {
         if (transform.position.y < 1000)
             transform.position -= transform.forward * Time.deltaTime * 10f;
-        transform.LookAt(GameObject.Find("BigExplosion").transform);
+        transform.LookAt(GameObject.Find("BigExplosion Variant").transform);
         transform.position += transform.right * Time.deltaTime * 5f;
         transform.position += Vector3.up * Time.deltaTime * 3f;
 

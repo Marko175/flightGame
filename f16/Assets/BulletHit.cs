@@ -20,7 +20,7 @@ public class BulletHit : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "enemy")
-            other.gameObject.GetComponentInParent<PracticeTarget>().Die();
+            other.gameObject.GetComponentInParent<sufa>().Die();
         if (other.gameObject.name == "Terrain")
         {
             ParticleSystem e = Instantiate(groundHit);
