@@ -214,16 +214,7 @@ public class sufa : MonoBehaviour
             else
                 shooting = false;
 
-            if ((Input.GetKeyDown(KeyCode.M) || Input.GetKey(KeyCode.Mouse0)) && mode == 2)
-            {
-                GameObject missile = Instantiate(lulav, lulav.transform.position, lulav.transform.rotation);
-                missile.GetComponent<Rocket>().target = target;
-                missile.GetComponent<Rocket>().speed = Speed;
-                missile.GetComponent<Rocket>().velocity = velocity;
-                missile.GetComponent<Rocket>().shot = true;
-                Destroy(lulav);
-                
-            }
+
         }
         else
             return; //////////////////////////////////////////////AI SHOOTING
@@ -436,7 +427,7 @@ public class sufa : MonoBehaviour
         Vector3 pitchVector = Vector3.ProjectOnPlane(toPlayer, transform.right);
 
         flightInput.pitch = -(Vector3.Cross(pitchVector, transform.forward)).magnitude;
-        //flightInput.Reheat = true;
+        flightInput.Reheat = true;
 
 
 
